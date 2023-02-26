@@ -4,15 +4,15 @@
  * 
  */
 
+#include "BinManip.hpp"
 #include "HeaderExtract.hpp"
 
 int main (int argc, char** argv)
 {
-    std::string file = "testfiles/rufus.exe";
+    std::string file = "testfiles/mongofiles.exe";
     HeaderInfo hf (file);
     if (hf.analyze_file())
         hf.print_coff();
-        //hf.print_info();
     else
         std::cerr << "\nWas unable to open file." << std::endl;
 

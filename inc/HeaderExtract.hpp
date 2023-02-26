@@ -13,8 +13,8 @@
 #include <iostream>
 #include <string>
 
-const char MS_DOS []= "This program cannot be run in DOS mode.";
-const unsigned int MS_DOS_LEN = 39;
+const char MS_DOS []= "This program cannot be run in DOS mode";
+const unsigned int MS_DOS_LEN = 38;
 const char PE_HEADER [] = "PE\0\0";
 const unsigned int PE_HEADER_LEN = 4;
 
@@ -48,13 +48,13 @@ private:
     bool has_msdos, has_pe;
 
     // COFF File Header Information
-    uint8_t machine [2];
-    uint8_t number_of_sections [2];
-    uint8_t time_date_stamp[4];
-    uint8_t pointer_to_symbol_table[4];
-    uint8_t number_of_symbols[4];
-    uint8_t size_of_optional_header[2];
-    uint8_t characteristics[2];
+    uint16_t machine;
+    uint16_t number_of_sections;
+    uint32_t time_date_stamp;
+    uint32_t pointer_to_symbol_table;
+    uint32_t number_of_symbols;
+    uint16_t size_of_optional_header;
+    uint16_t characteristics;
 
 };
 

@@ -4,6 +4,7 @@
  * 
  */
 
+#include "BinManip.hpp"
 
 #include "HeaderExtract.hpp"
 
@@ -90,7 +91,39 @@ void HeaderInfo::load_coff (std::ifstream& buffer)
 {
     buffer.seekg(pe_addr + 4, std::ios::beg);
 
-    buffer.read((char*) machine, 2);
+    uint8_t word[2];
+    uint8_t dword[4];
+
+    // TODO: Put each of these reads into its own function
+
+    // Read each attribute of the COFF section
+    buffer.read((char*) word, 2);
+    swap_endian(word, 2);
+    bitstring_to_word (&machine, word);
+
+    buffer.read((char*) word, 2);
+    swap_endian(word, 2);
+    bitstring_to_word (&number_of_sections, word);
+
+    buffer.read((char*) dword, 4);
+    swap_endian(dword, 4);
+    bitstring_to_dword (&time_date_stamp, dword);
+
+    buffer.read((char*) dword, 4);
+    swap_endian(dword, 4);
+    bitstring_to_dword (&pointer_to_symbol_table, dword);
+
+    buffer.read((char*) dword, 4);
+    swap_endian(dword, 4);
+    bitstring_to_dword (&number_of_symbols, dword);
+
+    buffer.read((char*) word, 2);
+    swap_endian(word, 2);
+    bitstring_to_word (&size_of_optional_header, word);
+
+    buffer.read((char*) word, 2);
+    swap_endian(word, 2);
+    bitstring_to_word (&characteristics, word);
 }
 
 
@@ -103,21 +136,13 @@ void HeaderInfo::reset_flags()
 
 void HeaderInfo::reset_coff()
 {
-    for (unsigned int i = 0; i < 4; i++)
-    {
-        // Zero out 16-bit variables
-        if (i % 2 == 0)
-        {
-            machine[i / 2] = 0x00;
-            number_of_sections[i / 2] = 0x00;
-            size_of_optional_header[i / 2] = 0x00;
-            characteristics[i / 2] = 0x00;
-        }
-        // Zero out 32-bit variables
-        time_date_stamp[i] = 0x00;
-        pointer_to_symbol_table[i] = 0x00;
-        number_of_symbols[i] = 0x00;
-    }
+    machine = 0x0000;
+    number_of_sections = 0x0000;
+    time_date_stamp = 0x00000000;
+    pointer_to_symbol_table = 0x00000000;
+    number_of_symbols = 0x00000000;
+    size_of_optional_header = 0x0000;
+    characteristics = 0x0000;
 }
 
 
@@ -133,39 +158,15 @@ void HeaderInfo::print_info()
 
 void HeaderInfo::print_coff()
 {
-    std::cout << "\n\nCOFF Header" << std::hex;
-
-    // Declare loop var here so isn't reinstantiated every loop
-    unsigned int i = 0;
-
-    std::cout << "\nMachine Type: ";
-    for (i = 0; i < 2; i++)
-        std::cout << (uint16_t) machine[i];
-
-    std::cout << "\nNum of Sects: ";
-    for (i = 0; i < 2; i++)
-        std::cout << (uint16_t) number_of_sections[i];
-
-    std::cout << "\nTime Stamp  : ";
-    for (i = 0; i < 4; i++)
-        std::cout << (uint16_t) time_date_stamp[i];
-
-    std::cout << "\nSym Tab Ptr : ";
-    for (i = 0; i < 4; i++)
-        std::cout << (uint16_t) pointer_to_symbol_table[i];
-
-    std::cout << "\nNum of Symbs: ";
-    for (i = 0; i < 4; i++)
-        std::cout << (uint16_t) number_of_symbols[i];
-
-    std::cout << "\nOpt Head Sz : ";
-    for (i = 0; i < 2; i++)
-        std::cout << (uint16_t) size_of_optional_header[i];
-
-    std::cout << "\nCharacterist: ";
-    for (i = 0; i < 2; i++)
-        std::cout << (uint16_t) characteristics[i];
-
-    std::cout << std::endl << std::dec;
+    std::cout             << "\nCOFF Header"
+                          << "\n========================="
+              << std::hex << "\nMachine Type: 0x" << machine
+              << std::dec << "\nNum of Sects: " << number_of_sections
+              << std::hex << "\nTime Stamp  : " << time_date_stamp
+              << std::hex << "\nSym Tab Ptr : 0x" << pointer_to_symbol_table
+              << std::dec << "\nNum of Symbs: " << number_of_symbols
+                          << "\nOpt Headr Sz: " << size_of_optional_header
+              << std::hex << "\nCharacterist: 0x" << characteristics
+              << std::endl << std::dec;
 
 }
