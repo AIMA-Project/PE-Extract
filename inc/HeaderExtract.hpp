@@ -39,6 +39,8 @@ public:
 
     void print_info();
 
+    void print_coff();
+
 private:
     std::string file_name;
 
@@ -46,13 +48,13 @@ private:
     bool has_msdos, has_pe;
 
     // COFF File Header Information
-    uint8_t machine_type [2] = {'\0'};
-    uint16_t section_quant;
-    uint32_t time_stamp;
-    uint32_t sym_tab_ptr;
-    uint32_t sym_quant;
-    uint16_t opt_header_size;
-    uint16_t characteristics;
+    uint8_t machine [2];
+    uint8_t number_of_sections [2];
+    uint8_t time_date_stamp[4];
+    uint8_t pointer_to_symbol_table[4];
+    uint8_t number_of_symbols[4];
+    uint8_t size_of_optional_header[2];
+    uint8_t characteristics[2];
 
 };
 

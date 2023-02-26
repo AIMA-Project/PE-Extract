@@ -8,9 +8,13 @@
 
 int main (int argc, char** argv)
 {
-    HeaderInfo hf ("TestFiles/rufus.exe");
-    hf.analyze_file();
-    hf.print_info();
+    std::string file = "testfiles/rufus.exe";
+    HeaderInfo hf (file);
+    if (hf.analyze_file())
+        hf.print_coff();
+        //hf.print_info();
+    else
+        std::cerr << "\nWas unable to open file." << std::endl;
 
     return 0;
 }

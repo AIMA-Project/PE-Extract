@@ -49,12 +49,15 @@ void HeaderInfo::find_ms_dos (std::ifstream& buffer)
 {
     char buffer_char = ' ';
 
+    // Look for the MS-DOS indicator at addr 0x4e
     buffer.seekg(0x4e, std::ios::beg);
     for (unsigned i = 0; i < MS_DOS_LEN; i++)
     {
         buffer >> buffer_char;
+        // Inconsistent header, stop looking
         if (buffer_char != MS_DOS[i])
             break;
+        // MS-DOS string was found
         else if (i == MS_DOS_LEN - 1)
             has_msdos = true;
     }
@@ -74,8 +77,10 @@ void HeaderInfo::find_pe (std::ifstream& buffer)
     for (unsigned int i = 0; i < PE_HEADER_LEN; i++)
     {
         buffer >> buffer_char;
+        // Inconsistent header, stop looking
         if (buffer_char != PE_HEADER[i])
             break;
+        // PE\0\0 was found
         else if (i == PE_HEADER_LEN - 1)
             has_pe = true;
     }
@@ -85,7 +90,7 @@ void HeaderInfo::load_coff (std::ifstream& buffer)
 {
     buffer.seekg(pe_addr + 4, std::ios::beg);
 
-    buffer.read((char*) machine_type, 2);
+    buffer.read((char*) machine, 2);
 }
 
 
@@ -98,10 +103,21 @@ void HeaderInfo::reset_flags()
 
 void HeaderInfo::reset_coff()
 {
-    machine_type[0] = machine_type[1] = '\0';
-    section_quant = 0x0000;
-    time_stamp = sym_tab_ptr = sym_quant = 0x00000000;
-    opt_header_size = characteristics = 0x0000;
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        // Zero out 16-bit variables
+        if (i % 2 == 0)
+        {
+            machine[i / 2] = 0x00;
+            number_of_sections[i / 2] = 0x00;
+            size_of_optional_header[i / 2] = 0x00;
+            characteristics[i / 2] = 0x00;
+        }
+        // Zero out 32-bit variables
+        time_date_stamp[i] = 0x00;
+        pointer_to_symbol_table[i] = 0x00;
+        number_of_symbols[i] = 0x00;
+    }
 }
 
 
@@ -111,13 +127,45 @@ void HeaderInfo::print_info()
     std::cout << "Report for " << file_name
               << "\nMS DOS Flag: " << has_msdos
               << "\nPE Flag:     " << has_pe
-              << "\n\nCOFF Header" << std::hex
-              << "\nMachine Type: " << machine_type[0] << machine_type[1]
-              << "\nSections    : " << section_quant
-              << "\nTime Stamp  : " << time_stamp
-              << "\nSym Tab Ptr : " << sym_tab_ptr
-              << "\nNo of Symbol: " << sym_quant
-              << "\nOpt. Head Sz: " << opt_header_size
-              << "\nCharacterist: " << characteristics
               << std::endl;
+}
+
+
+void HeaderInfo::print_coff()
+{
+    std::cout << "\n\nCOFF Header" << std::hex;
+
+    // Declare loop var here so isn't reinstantiated every loop
+    unsigned int i = 0;
+
+    std::cout << "\nMachine Type: ";
+    for (i = 0; i < 2; i++)
+        std::cout << (uint16_t) machine[i];
+
+    std::cout << "\nNum of Sects: ";
+    for (i = 0; i < 2; i++)
+        std::cout << (uint16_t) number_of_sections[i];
+
+    std::cout << "\nTime Stamp  : ";
+    for (i = 0; i < 4; i++)
+        std::cout << (uint16_t) time_date_stamp[i];
+
+    std::cout << "\nSym Tab Ptr : ";
+    for (i = 0; i < 4; i++)
+        std::cout << (uint16_t) pointer_to_symbol_table[i];
+
+    std::cout << "\nNum of Symbs: ";
+    for (i = 0; i < 4; i++)
+        std::cout << (uint16_t) number_of_symbols[i];
+
+    std::cout << "\nOpt Head Sz : ";
+    for (i = 0; i < 2; i++)
+        std::cout << (uint16_t) size_of_optional_header[i];
+
+    std::cout << "\nCharacterist: ";
+    for (i = 0; i < 2; i++)
+        std::cout << (uint16_t) characteristics[i];
+
+    std::cout << std::endl << std::dec;
+
 }
