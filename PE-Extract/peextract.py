@@ -28,3 +28,20 @@ if __name__ == "__main__":
     print ("Characterisitcs: {ch_quant}".format(ch_quant = len (chara_flags)))
     for c in chara_flags:
         print("\t" + str(c))
+
+    # Optional header content
+    opt_head = port_exe.optional_header
+    print ("\nOptional Header Content")
+    print ("=========================================================")
+    print ("Magic                   : " + str(opt_head.magic))
+    print ("Image Base              : " + str (opt_head.imagebase))
+    print ("Section Alignment       : " + str (opt_head.section_alignment))
+    print ("File Alignment          : " + str (opt_head.file_alignment))
+    print ("Size of Image           : " + str (opt_head.sizeof_image))
+    print ("DLL Characteristic Flags: " + str (hex(opt_head.dll_characteristics)))
+
+    # Data directory part of optional header
+    dat_dir = port_exe.data_directories
+    print ("Data Directory: ")
+    for d in dat_dir:
+        print ('\t' + str(d.type))
