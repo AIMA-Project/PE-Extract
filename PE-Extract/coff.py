@@ -1,12 +1,9 @@
 from datetime import datetime
-from multipledispatch import dispatch
-
 import lief
 
 
 class CoffHeader (object):
 
-    @dispatch()
     def __init__ (self) -> None:
         self.__target_machine: lief.PE.MACHINE_TYPES = None
         self.__timestamp: datetime = None
