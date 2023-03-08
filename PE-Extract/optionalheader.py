@@ -2,7 +2,7 @@ from multipledispatch import dispatch
 
 import lief
 
-class OptionalHeader ():
+class OptionalHeader (object):
 
     @dispatch()
     def __init__ (self) -> None:

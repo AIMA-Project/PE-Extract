@@ -5,7 +5,8 @@ from optionalheader import OptionalHeader
 from hashlib import sha256
 
 
-class PortableExecutable ():
+class PortableExecutable (object):
+
     @dispatch()
     def __init__ (self) -> None:
         # General imformation about the executable

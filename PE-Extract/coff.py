@@ -4,7 +4,7 @@ from multipledispatch import dispatch
 import lief
 
 
-def CoffHeader ():
+class CoffHeader (object):
 
     @dispatch()
     def __init__ (self) -> None:
