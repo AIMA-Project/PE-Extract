@@ -11,6 +11,10 @@ class CoffHeader (object):
         self.__target_machine: lief.PE.MACHINE_TYPES = None
         self.__timestamp: datetime = None
 
+    
+    def find_timestamp (self, header: lief.PE.Header) -> None:
+        self.timestamp = header.time_date_stamps
+
 
     # Accessors and mutators
     @property
