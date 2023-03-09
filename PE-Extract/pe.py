@@ -4,6 +4,8 @@ from optionalheader import OptionalHeader
 from os import path
 from sys import argv
 
+import lief
+
 
 class PortableExecutable (object):
 
@@ -15,8 +17,8 @@ class PortableExecutable (object):
         self.__sha1: str = ""
         self.__sha256: str = ""
         # Header data
-        self.__coff_header: CoffHeader = CoffHeader()
-        self.__opt_header: OptionalHeader = OptionalHeader()
+        self.__coff_header: CoffHeader = None
+        self.__opt_header: OptionalHeader = None
         self.setup()
 
 
@@ -26,6 +28,8 @@ class PortableExecutable (object):
             self.calculate_md5()
             self.calculate_sha1()
             self.calculate_sha256()
+            binary = lief.parse (self.name)
+            self.coff_header = CoffHeader (header = binary.header)
 
     def check_size (self) -> None:
         self.size = path.getsize (self.name)
@@ -107,6 +111,10 @@ class PortableExecutable (object):
     def sha256 (self, h: str) -> None:
         self.__sha256 = h
 
+    @coff_header.setter
+    def coff_header (self, ch: CoffHeader) -> None:
+        self.__coff_header = ch
+
 
     def __str__ (self) -> str:
         return ("Name: " + self.name + "\nSize: " + str (self.size) + " bytes" + "\nMD5 : " +
@@ -118,4 +126,4 @@ class PortableExecutable (object):
 if __name__ == "__main__":
     test_executable = PortableExecutable(file = argv[1])
     print (test_executable)
-
+    print (test_executable.coff_header)

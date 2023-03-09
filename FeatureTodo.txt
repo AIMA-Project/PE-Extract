@@ -1,9 +1,9 @@
-[ ] Machine
-[ ] Characteristics
-[ ] Number of Sections
-[ ] TimeDateStamp
-[ ] PointerToSymbolTable
-[ ] NumberOfSymbols
+[X] Machine
+[X] Characteristics
+[X] Number of Sections
+[X] TimeDateStamp
+[X] PointerToSymbolTable
+[X] NumberOfSymbols
 [ ] Magic
 [ ] MajorLinkerVersion
 [ ] MinorLinkerVersion
@@ -20,7 +20,7 @@
 [ ] MajorOperatingSystemVersion
 [ ] Num_Suspecious_Sections
 [ ] MinorOperatingSystemVersion
-[ ] SizeOfOptionalHeader
+[X] SizeOfOptionalHeader
 [ ] e_lfanew
 [ ] CharacteristicsMax
 [ ] SectionsMaxEntropy
