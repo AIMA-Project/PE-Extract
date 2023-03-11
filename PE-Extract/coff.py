@@ -6,7 +6,7 @@ import lief
 class CoffHeader (object):
 
     # Initializer
-    def __init__ (self, header: lief.PE = None) -> None:
+    def __init__ (self, header: lief.PE.Header = None) -> None:
         self.__target_machine: lief.PE.MACHINE_TYPES = None
         self.__section_quantity: int = 0
         self.__timestamp: datetime = None

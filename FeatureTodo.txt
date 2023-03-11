@@ -4,18 +4,18 @@
 [X] TimeDateStamp
 [X] PointerToSymbolTable
 [X] NumberOfSymbols
-[ ] Magic
-[ ] MajorLinkerVersion
-[ ] MinorLinkerVersion
-[ ] SizeOfCode
-[ ] SizeOfInitializedData
-[ ] SizeOfUninitializedData
+[X] Magic
+[X] MajorLinkerVersion
+[X] MinorLinkerVersion
+[X] SizeOfCode
+[X] SizeOfInitializedData
+[X] SizeOfUninitializedData
 [X] CheckSum
-[ ] BaseOfCode
+[X] BaseOfCode
 [ ] ImageBase
 [ ] MajorsubsystemVersion
 [ ] Subsystem
-[ ] DllCharacteristics
+[X] DllCharacteristics
 [ ] SizeOfStackReserve
 [ ] MajorOperatingSystemVersion
 [ ] Num_Suspecious_Sections
