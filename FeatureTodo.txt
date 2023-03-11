@@ -10,7 +10,7 @@
 [ ] SizeOfCode
 [ ] SizeOfInitializedData
 [ ] SizeOfUninitializedData
-[ ] CheckSum
+[X] CheckSum
 [ ] BaseOfCode
 [ ] ImageBase
 [ ] MajorsubsystemVersion
