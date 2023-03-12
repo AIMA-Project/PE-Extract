@@ -12,16 +12,20 @@ class OptionalHeader (object):
         self.__unint_data_size = None
         self.__code_base = None
         self.__dll_properties: lief.PE.DLL_CHARACTERISTICS = None
-        # Optional information
+        # Windows-specific fields
+        self.__imagebase: int = 0
         self.__subsystem: lief.PE.SUBSYSTEM = None
         self.__maj_subsys_ver: int = 0
         self.__min_subsys_ver: int = 0
+        self.__maj_os_ver: int = 0
+        self.__min_os_ver: int = 0
         # Headers were passed in, extract relevant information
         if opt_header is not None:
             self.setup (opt_header)
 
 
     def setup (self, opt_header: lief.PE.OptionalHeader) -> None:
+        # This seems a bit excessive...
         self.extract_magic            (opt_header)
         self.extract_maj_link_ver     (opt_header)
         self.extract_min_link_ver     (opt_header)
@@ -30,9 +34,12 @@ class OptionalHeader (object):
         self.extract_uninit_data_size (opt_header)
         self.extract_code_base        (opt_header)
         self.extract_dll_properties   (opt_header)
+        self.extract_imagebase        (opt_header)
         self.extract_subsystem        (opt_header)
         self.extract_maj_subsys_ver   (opt_header)
         self.extract_min_subsys_ver   (opt_header)
+        self.extract_maj_os_ver       (opt_header)
+        self.extract_min_os_ver       (opt_header)
 
     def extract_magic (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.magic = opt_header.magic
@@ -58,6 +65,9 @@ class OptionalHeader (object):
     def extract_dll_properties (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.dll_properties = opt_header.dll_characteristics
 
+    def extract_imagebase (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.imagebase = opt_header.imagebase
+
     def extract_subsystem (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.subsystem = opt_header.subsystem
 
@@ -66,6 +76,12 @@ class OptionalHeader (object):
 
     def extract_min_subsys_ver (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.min_subsys_ver = opt_header.minor_subsystem_version
+
+    def extract_maj_os_ver (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.maj_os_ver = opt_header.major_operating_system_version
+
+    def extract_min_os_ver (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.min_os_ver = opt_header.minor_operating_system_version
 
 
     # Accessors and mutators
@@ -102,6 +118,10 @@ class OptionalHeader (object):
         return self.__dll_properties
     
     @property
+    def imagebase (self) -> int:
+        return self.__imagebase
+    
+    @property
     def subsystem (self) -> lief.PE.SUBSYSTEM:
         return self.__subsystem
     
@@ -112,6 +132,14 @@ class OptionalHeader (object):
     @property
     def min_subsys_ver (self) -> int:
         return self.__min_subsys_ver
+    
+    @property
+    def maj_os_ver (self) -> int:
+        return self.__maj_os_ver
+    
+    @property
+    def min_os_ver (self) -> int:
+        return self.__min_os_ver
     
     @magic.setter
     def magic (self, m) -> None:
@@ -145,6 +173,10 @@ class OptionalHeader (object):
     def dll_properties (self, p: lief.PE.DLL_CHARACTERISTICS) -> None:
         self.__dll_properties = p
 
+    @imagebase.setter
+    def imagebase (self, ib: int) -> None:
+        self.__imagebase = ib
+
     @subsystem.setter
     def subsystem (self, s: lief.PE.SUBSYSTEM) -> None:
         self.__subsystem = s
@@ -157,6 +189,14 @@ class OptionalHeader (object):
     def min_subsys_ver (self, v: int) -> None:
         self.__min_subsys_ver = v
 
+    @maj_os_ver.setter
+    def maj_os_ver (self, v: int) -> None:
+        self.__maj_os_ver = v
+
+    @min_os_ver.setter
+    def min_os_ver (self, v: int) -> None:
+        self.__min_os_ver = v
+
     
     # Overloads
     def __str__ (self) -> str:
@@ -167,8 +207,10 @@ class OptionalHeader (object):
                 "\nUninit. Data Size: " + str (self.uninit_data_size) +
                 "\nCode Base: " + str (hex (self.code_base)) +
                 "\nDLL Characts: " + str ( bin (self.dll_properties)) +
+                "\nImage Base: " + str ( hex (self.imagebase)) +
                 "\nSubsystem : " + str (self.subsystem) +
-                "\nSubsys Versi: " + str (self.maj_subsys_ver) + "." + str (self.min_subsys_ver))
+                "\nSubsys Versi: " + str (self.maj_subsys_ver) + "." + str (self.min_subsys_ver) +
+                "\nOS Version  : " + str (self.maj_os_ver) + "." + str (self.min_os_ver))
 
 
 

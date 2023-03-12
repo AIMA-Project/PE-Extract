@@ -12,14 +12,14 @@
 [X] SizeOfUninitializedData
 [X] CheckSum
 [X] BaseOfCode
-[ ] ImageBase
+[X] ImageBase
 [X] MajorsubsystemVersion
 [X] Subsystem
 [X] DllCharacteristics
 [ ] SizeOfStackReserve
-[ ] MajorOperatingSystemVersion
+[X] MajorOperatingSystemVersion
 [ ] Num_Suspicious_Sections
-[ ] MinorOperatingSystemVersion
+[X] MinorOperatingSystemVersion
 [X] SizeOfOptionalHeader
 [ ] e_lfanew (Long File Address)
 [ ] CharacteristicsMax
