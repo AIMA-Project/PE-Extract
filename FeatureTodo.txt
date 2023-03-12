@@ -13,15 +13,15 @@
 [X] CheckSum
 [X] BaseOfCode
 [ ] ImageBase
-[ ] MajorsubsystemVersion
-[ ] Subsystem
+[X] MajorsubsystemVersion
+[X] Subsystem
 [X] DllCharacteristics
 [ ] SizeOfStackReserve
 [ ] MajorOperatingSystemVersion
-[ ] Num_Suspecious_Sections
+[ ] Num_Suspicious_Sections
 [ ] MinorOperatingSystemVersion
 [X] SizeOfOptionalHeader
-[ ] e_lfanew
+[ ] e_lfanew (Long File Address)
 [ ] CharacteristicsMax
 [ ] SectionsMaxEntropy
 [ ] SecurityCookie

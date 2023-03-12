@@ -3,6 +3,7 @@ import lief
 class OptionalHeader (object):
 
     def __init__ (self, opt_header: lief.PE.OptionalHeader = None) -> None:
+        # Standard information
         self.__magic: hex = 0x0000
         self.__maj_link_ver: int = 0
         self.__min_link_ver: int = 0
@@ -11,6 +12,10 @@ class OptionalHeader (object):
         self.__unint_data_size = None
         self.__code_base = None
         self.__dll_properties: lief.PE.DLL_CHARACTERISTICS = None
+        # Optional information
+        self.__subsystem: lief.PE.SUBSYSTEM = None
+        self.__maj_subsys_ver: int = 0
+        self.__min_subsys_ver: int = 0
         # Headers were passed in, extract relevant information
         if opt_header is not None:
             self.setup (opt_header)
@@ -25,6 +30,9 @@ class OptionalHeader (object):
         self.extract_uninit_data_size (opt_header)
         self.extract_code_base        (opt_header)
         self.extract_dll_properties   (opt_header)
+        self.extract_subsystem        (opt_header)
+        self.extract_maj_subsys_ver   (opt_header)
+        self.extract_min_subsys_ver   (opt_header)
 
     def extract_magic (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.magic = opt_header.magic
@@ -49,6 +57,15 @@ class OptionalHeader (object):
 
     def extract_dll_properties (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.dll_properties = opt_header.dll_characteristics
+
+    def extract_subsystem (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.subsystem = opt_header.subsystem
+
+    def extract_maj_subsys_ver (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.maj_subsys_ver = opt_header.major_subsystem_version
+
+    def extract_min_subsys_ver (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.min_subsys_ver = opt_header.minor_subsystem_version
 
 
     # Accessors and mutators
@@ -84,6 +101,18 @@ class OptionalHeader (object):
     def dll_properties (self) -> lief.PE.DLL_CHARACTERISTICS:
         return self.__dll_properties
     
+    @property
+    def subsystem (self) -> lief.PE.SUBSYSTEM:
+        return self.__subsystem
+    
+    @property
+    def maj_subsys_ver (self) -> int:
+        return self.__maj_subsys_ver
+    
+    @property
+    def min_subsys_ver (self) -> int:
+        return self.__min_subsys_ver
+    
     @magic.setter
     def magic (self, m) -> None:
         self.__magic = m
@@ -116,6 +145,18 @@ class OptionalHeader (object):
     def dll_properties (self, p: lief.PE.DLL_CHARACTERISTICS) -> None:
         self.__dll_properties = p
 
+    @subsystem.setter
+    def subsystem (self, s: lief.PE.SUBSYSTEM) -> None:
+        self.__subsystem = s
+
+    @maj_subsys_ver.setter
+    def maj_subsys_ver (self, v: int) -> None:
+        self.__maj_subsys_ver = v
+
+    @min_subsys_ver.setter
+    def min_subsys_ver (self, v: int) -> None:
+        self.__min_subsys_ver = v
+
     
     # Overloads
     def __str__ (self) -> str:
@@ -125,7 +166,9 @@ class OptionalHeader (object):
                 "\nInit. Data Size: " + str (self.init_data_size) +
                 "\nUninit. Data Size: " + str (self.uninit_data_size) +
                 "\nCode Base: " + str (hex (self.code_base)) +
-                "\nDLL Characts: " + str ( bin (self.dll_properties)))
+                "\nDLL Characts: " + str ( bin (self.dll_properties)) +
+                "\nSubsystem : " + str (self.subsystem) +
+                "\nSubsys Versi: " + str (self.maj_subsys_ver) + "." + str (self.min_subsys_ver))
 
 
 
