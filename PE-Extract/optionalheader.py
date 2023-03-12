@@ -14,6 +14,7 @@ class OptionalHeader (object):
         self.__dll_properties: lief.PE.DLL_CHARACTERISTICS = None
         # Windows-specific fields
         self.__imagebase: int = 0
+        self.__stack_reserve_size: int = 0
         self.__subsystem: lief.PE.SUBSYSTEM = None
         self.__maj_subsys_ver: int = 0
         self.__min_subsys_ver: int = 0
@@ -35,9 +36,8 @@ class OptionalHeader (object):
         self.extract_code_base        (opt_header)
         self.extract_dll_properties   (opt_header)
         self.extract_imagebase        (opt_header)
-        self.extract_subsystem        (opt_header)
-        self.extract_maj_subsys_ver   (opt_header)
-        self.extract_min_subsys_ver   (opt_header)
+        self.extract_stack_reserve_size (opt_header)
+        self.extract_full_subsystem   (opt_header)
         self.extract_maj_os_ver       (opt_header)
         self.extract_min_os_ver       (opt_header)
 
@@ -67,6 +67,14 @@ class OptionalHeader (object):
 
     def extract_imagebase (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.imagebase = opt_header.imagebase
+
+    def extract_stack_reserve_size (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.stack_reserve_size = opt_header.sizeof_stack_reserve
+
+    def extract_full_subsystem (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.extract_subsystem      (opt_header)
+        self.extract_maj_subsys_ver (opt_header)
+        self.extract_min_subsys_ver (opt_header)
 
     def extract_subsystem (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.subsystem = opt_header.subsystem
@@ -120,6 +128,10 @@ class OptionalHeader (object):
     @property
     def imagebase (self) -> int:
         return self.__imagebase
+    
+    @property
+    def stack_reserve_size (self) -> int:
+        return self.__stack_reserve_size
     
     @property
     def subsystem (self) -> lief.PE.SUBSYSTEM:
@@ -177,6 +189,10 @@ class OptionalHeader (object):
     def imagebase (self, ib: int) -> None:
         self.__imagebase = ib
 
+    @stack_reserve_size.setter
+    def stack_reserve_size (self, s: int) -> None:
+        self.__stack_reserve_size = s
+
     @subsystem.setter
     def subsystem (self, s: lief.PE.SUBSYSTEM) -> None:
         self.__subsystem = s
@@ -208,6 +224,7 @@ class OptionalHeader (object):
                 "\nCode Base: " + str (hex (self.code_base)) +
                 "\nDLL Characts: " + str ( bin (self.dll_properties)) +
                 "\nImage Base: " + str ( hex (self.imagebase)) +
+                "\nStk Res Size: " + str (self.stack_reserve_size) +
                 "\nSubsystem : " + str (self.subsystem) +
                 "\nSubsys Versi: " + str (self.maj_subsys_ver) + "." + str (self.min_subsys_ver) +
                 "\nOS Version  : " + str (self.maj_os_ver) + "." + str (self.min_os_ver))

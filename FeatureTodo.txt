@@ -16,7 +16,7 @@
 [X] MajorsubsystemVersion
 [X] Subsystem
 [X] DllCharacteristics
-[ ] SizeOfStackReserve
+[X] SizeOfStackReserve
 [X] MajorOperatingSystemVersion
 [ ] Num_Suspicious_Sections
 [X] MinorOperatingSystemVersion
