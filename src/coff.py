@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 import lief
 
@@ -9,11 +9,11 @@ class CoffHeader (object):
     def __init__ (self, header: lief.PE.Header = None) -> None:
         self.__target_machine: lief.PE.MACHINE_TYPES = None
         self.__section_quantity: int = 0
-        self.__timestamp: datetime = None
-        self.__sym_table_ptr: int = None    # Normally Unused; COFF DBGing Deprecated
+        self.__timestamp: datetime = datetime(1970, 1, 1, tzinfo=timezone.utc) # Init to epoch
+        self.__sym_table_ptr: int = 0       # Normally Unused; COFF DBGing Deprecated
         self.__symbol_quantity: int = 0     # Normally Unused; COFF DBGing Deprecated
         self.__opt_header_size: int = 0
-        self.__characteristics: List[lief.PE.HEADER_CHARACTERISTICS] = None
+        self.__characteristics: List[lief.PE.HEADER_CHARACTERISTICS] = []
         # Try to extract data from header
         self.setup (header)
 

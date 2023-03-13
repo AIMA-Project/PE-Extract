@@ -22,9 +22,9 @@
 [X] MinorOperatingSystemVersion
 [X] SizeOfOptionalHeader
 [ ] e_lfanew (Long File Address)
-[ ] CharacteristicsMax
-[ ] SectionsMaxEntropy
+[X] CharacteristicsMax
+[X] SectionsMaxEntropy
 [ ] SecurityCookie
 [ ] FileAlignment
-[ ] SectionsMeanEntropy
-[ ] SectionsMinEntropy
+[X] SectionsMeanEntropy
+[X] SectionsMinEntropy

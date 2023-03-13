@@ -23,23 +23,28 @@ class PortableExecutable (object):
         self.__opt_header: OptionalHeader = None
         # Sections
         self.__sec_list: List[Section] = []
+        self.__sec_min_entropy: float = 0.0
+        self.__sec_avg_entropy: float = 0.0
+        self.__sec_max_entropy: float = 0.0
         self.setup()
 
 
     def setup (self) -> None:
         if self.name != "":
             self.check_size()
-            self.calculate_md5()
-            self.calculate_sha1()
-            self.calculate_sha256()
+            self.calc_md5()
+            self.calc_sha1()
+            self.calc_sha256()
             binary = lief.parse (self.name)
             self.coff_header = CoffHeader (header = binary.header)
             self.opt_header = OptionalHeader (binary.optional_header)
+            self.init_sec_list (binary.sections)
+            self.calc_sec_entropy()
 
     def check_size (self) -> None:
         self.size = path.getsize (self.name)
 
-    def calculate_md5 (self) -> None:
+    def calc_md5 (self) -> None:
         hasher = md5()
         with open (self.name, "rb") as f_read:
             block = True
@@ -48,7 +53,7 @@ class PortableExecutable (object):
                 hasher.update (block)
         self.md5 = hasher.hexdigest()
 
-    def calculate_sha1 (self) -> None:
+    def calc_sha1 (self) -> None:
         hasher = sha1()
         with open (self.name, "rb") as f_read:
             block = True
@@ -57,7 +62,7 @@ class PortableExecutable (object):
                 hasher.update (block)
         self.sha1 = hasher.hexdigest()
 
-    def calculate_sha256 (self) -> None:
+    def calc_sha256 (self) -> None:
         hasher = sha256()
         with open (self.name, "rb") as f_read:
             block = True
@@ -66,6 +71,24 @@ class PortableExecutable (object):
                 hasher.update (block)
         self.sha256 = hasher.hexdigest()
 
+    def calc_sec_entropy (self) -> None:
+        entropy_list: List[int] = []
+        for s in self.sec_list:
+            entropy_list.append (s.entropy)
+        self.sec_min_entropy = min (entropy_list)
+        self.sec_avg_entropy = (sum (entropy_list) / len (entropy_list))
+        self.sec_max_entropy = max (entropy_list)
+
+    def init_sec_list (self, sections: lief.PE.Binary.it_section) -> int:
+        for sec in sections:
+            new_section = Section (section_info = sec)
+            self.sec_list.append(new_section)
+        return len (self.sec_list)
+    
+    def append_section (self, sec: Section) -> int:
+        self.sec_list.append(sec)
+        return len (self.sec_list)
+    
 
     # Accessors and mutators
     @property
@@ -96,6 +119,20 @@ class PortableExecutable (object):
     def opt_header (self) -> OptionalHeader:
         return self.__opt_header
     
+    @property
+    def sec_list (self) -> List[Section]:
+        return self.__sec_list
+    
+    @property
+    def sec_min_entropy (self) -> float:
+        return self.__sec_min_entropy
+    @property
+    def sec_avg_entropy (self) -> float:
+        return self.__sec_avg_entropy
+    @property
+    def sec_max_entropy (self) -> float:
+        return self.__sec_max_entropy
+    
     @name.setter
     def name (self, n: str) -> None:
         self.__name = n
@@ -123,17 +160,44 @@ class PortableExecutable (object):
     @opt_header.setter
     def opt_header (self, oh: OptionalHeader) -> None:
         self.__opt_header = oh
+    
+    @sec_list.setter
+    def sec_list (self, sl: List[Section]) -> None:
+        self.__sec_list = sl
+    
+    @sec_min_entropy.setter
+    def sec_min_entropy (self, e: float) -> None:
+        self.__sec_min_entropy = e
+
+    @sec_avg_entropy.setter
+    def sec_avg_entropy (self, e: float) -> None:
+        self.__sec_avg_entropy = e
+
+    @sec_max_entropy.setter
+    def sec_max_entropy (self, e: float) -> None:
+        self.__sec_max_entropy = e
+
 
 
     def __str__ (self) -> str:
-        return ("Name: " + self.name + "\nSize: " + str (self.size) + " bytes" + "\nMD5 : " +
-                 self.md5 + "\nSHA1: " + self.sha1 +  "\nS256: " + self.sha256)
+        return ("Name: " + self.name +
+                "\nSize: " + str (self.size) + " bytes" +
+                "\nMD5 : " + (self.md5) +
+                "\nSHA1: " + (self.sha1) + 
+                "\nS256: " + str (self.sha256) +
+                "\nEntropy: " +
+                "\n\tMin: " + str (self.sec_min_entropy) +
+                "\n\tAvg: " + str (self.sec_avg_entropy) +
+                "\n\tMax: " + str (self.sec_max_entropy)
+               )
 
 
 
 
 if __name__ == "__main__":
     test_executable = PortableExecutable(file = argv[1])
-    # print (test_executable)
-    # print (test_executable.coff_header)
+    print (test_executable)
+    print (test_executable.coff_header)
     print (test_executable.opt_header)
+    for s in test_executable.sec_list:
+        print (s)
