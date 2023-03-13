@@ -14,20 +14,20 @@ class CoffHeader (object):
         self.__symbol_quantity: int = 0     # Normally Unused; COFF DBGing Deprecated
         self.__opt_header_size: int = 0
         self.__characteristics: List[lief.PE.HEADER_CHARACTERISTICS] = None
-        # Header class was passed in, try to extract data from it
-        if header is not None:
-            self.setup (header)
+        # Try to extract data from header
+        self.setup (header)
 
 
     # Header extraction methods
     def setup (self, header: lief.PE.Header) -> None:
-        self.extract_machine (header)
-        self.extract_section_quant (header)
-        self.extract_timestamp (header)
-        self.extract_sym_tab_ptr (header)
-        self.extract_symbol_quant (header)
-        self.extract_opt_head_size (header)
-        self.extract_characteristics (header)
+        if header is not None:
+            self.extract_machine (header)
+            self.extract_section_quant (header)
+            self.extract_timestamp (header)
+            self.extract_sym_tab_ptr (header)
+            self.extract_symbol_quant (header)
+            self.extract_opt_head_size (header)
+            self.extract_characteristics (header)
 
     def extract_machine (self, header: lief.PE.Header) -> None:
         self.target_machine = header.machine

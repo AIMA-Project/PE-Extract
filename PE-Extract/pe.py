@@ -2,7 +2,9 @@ from coff import CoffHeader
 from hashlib import md5, sha1, sha256
 from optionalheader import OptionalHeader
 from os import path
+from section import Section
 from sys import argv
+from typing import List
 
 import lief
 
@@ -19,6 +21,8 @@ class PortableExecutable (object):
         # Header data
         self.__coff_header: CoffHeader = None
         self.__opt_header: OptionalHeader = None
+        # Sections
+        self.__sec_list: List[Section] = []
         self.setup()
 
 

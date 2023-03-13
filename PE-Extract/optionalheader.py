@@ -20,26 +20,26 @@ class OptionalHeader (object):
         self.__min_subsys_ver: int = 0
         self.__maj_os_ver: int = 0
         self.__min_os_ver: int = 0
-        # Headers were passed in, extract relevant information
-        if opt_header is not None:
-            self.setup (opt_header)
+        # Extract relevant information
+        self.setup (opt_header)
 
 
     def setup (self, opt_header: lief.PE.OptionalHeader) -> None:
-        # This seems a bit excessive...
-        self.extract_magic            (opt_header)
-        self.extract_maj_link_ver     (opt_header)
-        self.extract_min_link_ver     (opt_header)
-        self.extract_code_size        (opt_header)
-        self.extract_init_data_size   (opt_header)
-        self.extract_uninit_data_size (opt_header)
-        self.extract_code_base        (opt_header)
-        self.extract_dll_properties   (opt_header)
-        self.extract_imagebase        (opt_header)
-        self.extract_stack_reserve_size (opt_header)
-        self.extract_full_subsystem   (opt_header)
-        self.extract_maj_os_ver       (opt_header)
-        self.extract_min_os_ver       (opt_header)
+        if opt_header is not None:
+            # This seems a bit excessive, wonder if way to condense them
+            self.extract_magic            (opt_header)
+            self.extract_maj_link_ver     (opt_header)
+            self.extract_min_link_ver     (opt_header)
+            self.extract_code_size        (opt_header)
+            self.extract_init_data_size   (opt_header)
+            self.extract_uninit_data_size (opt_header)
+            self.extract_code_base        (opt_header)
+            self.extract_dll_properties   (opt_header)
+            self.extract_imagebase        (opt_header)
+            self.extract_stack_reserve_size (opt_header)
+            self.extract_full_subsystem   (opt_header)
+            self.extract_maj_os_ver       (opt_header)
+            self.extract_min_os_ver       (opt_header)
 
     def extract_magic (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.magic = opt_header.magic
