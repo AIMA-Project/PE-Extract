@@ -21,10 +21,10 @@
 [ ] Num_Suspicious_Sections
 [X] MinorOperatingSystemVersion
 [X] SizeOfOptionalHeader
-[ ] e_lfanew (Long File Address)
+[X] e_lfanew (Long File Address)
 [X] CharacteristicsMax
 [X] SectionsMaxEntropy
-[ ] SecurityCookie
-[ ] FileAlignment
+[X] SecurityCookie
+[X] FileAlignment
 [X] SectionsMeanEntropy
 [X] SectionsMinEntropy

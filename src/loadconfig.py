@@ -13,7 +13,7 @@ class LoadConfigDirectory (object):
     # Methods
     def setup (self, load_cfg: lief.PE.LoadConfiguration) -> None:
         if load_cfg is not None:
-            pass
+            self.extract_sec_cookie (load_cfg)
 
     def extract_sec_cookie (self, load_cfg: lief.PE.LoadConfiguration) -> None:
         self.security_cookie = load_cfg.security_cookie
@@ -31,7 +31,7 @@ class LoadConfigDirectory (object):
 
     # Overloads
     def __str__ (self) -> str:
-        return ("Security Cookie: " + str (self.security_cookie)
+        return ("\nSecurity Cookie: " + str (self.security_cookie)
                )
 
 

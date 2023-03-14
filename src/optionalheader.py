@@ -14,6 +14,7 @@ class OptionalHeader (object):
         self.__dll_properties: lief.PE.DLL_CHARACTERISTICS = None
         # Windows-specific fields
         self.__imagebase: int = 0
+        self.__file_alignment: int = 0
         self.__stack_reserve_size: int = 0
         self.__subsystem: lief.PE.SUBSYSTEM = None
         self.__maj_subsys_ver: int = 0
@@ -36,6 +37,7 @@ class OptionalHeader (object):
             self.extract_code_base        (opt_header)
             self.extract_dll_properties   (opt_header)
             self.extract_imagebase        (opt_header)
+            self.extract_file_alignment   (opt_header)
             self.extract_stack_reserve_size (opt_header)
             self.extract_full_subsystem   (opt_header)
             self.extract_maj_os_ver       (opt_header)
@@ -67,6 +69,9 @@ class OptionalHeader (object):
 
     def extract_imagebase (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.imagebase = opt_header.imagebase
+
+    def extract_file_alignment (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.file_alignment = opt_header.file_alignment
 
     def extract_stack_reserve_size (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.stack_reserve_size = opt_header.sizeof_stack_reserve
@@ -128,6 +133,10 @@ class OptionalHeader (object):
     @property
     def imagebase (self) -> int:
         return self.__imagebase
+
+    @property
+    def file_alignment (self) -> int:
+        return self.__file_alignment
     
     @property
     def stack_reserve_size (self) -> int:
@@ -189,6 +198,10 @@ class OptionalHeader (object):
     def imagebase (self, ib: int) -> None:
         self.__imagebase = ib
 
+    @file_alignment.setter
+    def file_alignment (self, fa: int) -> None:
+        self.__file_alignment = fa
+
     @stack_reserve_size.setter
     def stack_reserve_size (self, s: int) -> None:
         self.__stack_reserve_size = s
@@ -224,6 +237,7 @@ class OptionalHeader (object):
                 "\nCode Base: " + str (hex (self.code_base)) +
                 "\nDLL Characts: " + str ( bin (self.dll_properties)) +
                 "\nImage Base: " + str ( hex (self.imagebase)) +
+                "\nFile Align: " + str (self.file_alignment) +
                 "\nStk Res Size: " + str (self.stack_reserve_size) +
                 "\nSubsystem : " + str (self.subsystem) +
                 "\nSubsys Versi: " + str (self.maj_subsys_ver) + "." + str (self.min_subsys_ver) +

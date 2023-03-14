@@ -1,5 +1,6 @@
 from coff import CoffHeader
 from hashlib import md5, sha1, sha256
+from loadconfig import LoadConfigDirectory
 from optionalheader import OptionalHeader
 from os import path
 from section import Section
@@ -18,6 +19,8 @@ class PortableExecutable (object):
         self.__md5: str = ""
         self.__sha1: str = ""
         self.__sha256: str = ""
+        # DOS header data
+        self.__e_lfanew: hex(int) = 0
         # Header data
         self.__coff_header: CoffHeader = None
         self.__opt_header: OptionalHeader = None
@@ -26,6 +29,10 @@ class PortableExecutable (object):
         self.__sec_min_entropy: float = 0.0
         self.__sec_avg_entropy: float = 0.0
         self.__sec_max_entropy: float = 0.0
+        # Load configuration
+        self.__has_cfg: bool = False
+        self.__load_cfg: LoadConfigDirectory = None
+        # Load in data from PE file
         self.setup()
 
 
@@ -36,10 +43,15 @@ class PortableExecutable (object):
             self.calc_sha1()
             self.calc_sha256()
             binary = lief.parse (self.name)
+            self.e_lfanew = binary.dos_header.addressof_new_exeheader
             self.coff_header = CoffHeader (header = binary.header)
             self.opt_header = OptionalHeader (binary.optional_header)
             self.init_sec_list (binary.sections)
             self.calc_sec_entropy()
+            self.has_cfg = binary.has_configuration
+            if (self.has_cfg):
+                self.load_cfg = LoadConfigDirectory (load_cfg = binary.load_configuration)
+
 
     def check_size (self) -> None:
         self.size = path.getsize (self.name)
@@ -110,6 +122,10 @@ class PortableExecutable (object):
     @property
     def sha256 (self) -> str:
         return self.__sha256
+
+    @property
+    def e_lfanew (self) -> int:
+        return self.__e_lfanew
     
     @property
     def coff_header (self) -> CoffHeader:
@@ -132,6 +148,14 @@ class PortableExecutable (object):
     @property
     def sec_max_entropy (self) -> float:
         return self.__sec_max_entropy
+
+    @property
+    def has_cfg (self) -> bool:
+        return self.__has_cfg
+
+    @property
+    def load_cfg (self) -> LoadConfigDirectory:
+        return self.__load_cfg
     
     @name.setter
     def name (self, n: str) -> None:
@@ -152,6 +176,10 @@ class PortableExecutable (object):
     @sha256.setter
     def sha256 (self, h: str) -> None:
         self.__sha256 = h
+
+    @e_lfanew.setter
+    def e_lfanew (self, n: int) -> None:
+        self.__e_lfanew = n
 
     @coff_header.setter
     def coff_header (self, ch: CoffHeader) -> None:
@@ -176,6 +204,14 @@ class PortableExecutable (object):
     @sec_max_entropy.setter
     def sec_max_entropy (self, e: float) -> None:
         self.__sec_max_entropy = e
+    
+    @has_cfg.setter
+    def has_cfg (self, tf: bool) -> None:
+        self.__has_cfg = tf
+
+    @load_cfg.setter
+    def load_cfg (self, lc: LoadConfigDirectory) -> None:
+        self.__load_cfg = lc
 
 
 
@@ -185,10 +221,12 @@ class PortableExecutable (object):
                 "\nMD5 : " + (self.md5) +
                 "\nSHA1: " + (self.sha1) + 
                 "\nS256: " + str (self.sha256) +
+                "\ne_lfanew: " + str (hex (self.e_lfanew)) +
                 "\nEntropy: " +
                 "\n\tMin: " + str (self.sec_min_entropy) +
                 "\n\tAvg: " + str (self.sec_avg_entropy) +
-                "\n\tMax: " + str (self.sec_max_entropy)
+                "\n\tMax: " + str (self.sec_max_entropy) +
+                "\nHas Load Cfg: " + str (self.has_cfg)
                )
 
 
@@ -201,3 +239,4 @@ if __name__ == "__main__":
     print (test_executable.opt_header)
     for s in test_executable.sec_list:
         print (s)
+    print (test_executable.load_cfg)
