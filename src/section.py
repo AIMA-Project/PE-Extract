@@ -11,6 +11,7 @@ class Section (object):
         self.setup (section_info)
 
 
+    # Methods
     def setup (self, s_info: lief.PE.Section) -> None:
         self.full_name = s_info.fullname
         self.characteristics = s_info.characteristics_lists
