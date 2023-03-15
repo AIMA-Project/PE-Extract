@@ -12,8 +12,9 @@ import lief
 
 class PortableExecutable (object):
 
+    # Initializers
     def __init__ (self, file: str = "") -> None:
-        # General imformation about the executable
+        # General information about the executable
         self.__name: str = file
         self.__size: int = 0
         self.__md5: str = ""
@@ -38,6 +39,7 @@ class PortableExecutable (object):
         self.setup()
 
 
+    # Methods
     def setup (self) -> None:
         if self.name != "":
             self.check_size()
@@ -54,7 +56,6 @@ class PortableExecutable (object):
             self.has_cfg = binary.has_configuration
             if (self.has_cfg):
                 self.load_cfg = LoadConfigDirectory (load_cfg = binary.load_configuration)
-
 
     def check_size (self) -> None:
         self.size = path.getsize (self.name)
@@ -228,7 +229,7 @@ class PortableExecutable (object):
         self.__load_cfg = lc
 
 
-
+    # Overloads
     def __str__ (self) -> str:
         return ("Name: " + self.name +
                 "\nSize:  " + str (self.size) + " bytes" +
@@ -243,6 +244,7 @@ class PortableExecutable (object):
                 "\n\tMax: " + str (self.sec_max_entropy) +
                 "\nHas Load Cfg: " + str (self.has_cfg)
                )
+
 
 
 

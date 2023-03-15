@@ -17,6 +17,7 @@ class Section (object):
         self.characteristics = s_info.characteristics_lists
         self.entropy = s_info.entropy
 
+
     # Accessors and mutators
     @property
     def full_name (self) -> str:
