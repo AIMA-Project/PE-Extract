@@ -19,6 +19,8 @@ class PortableExecutable (object):
         self.__md5: str = ""
         self.__sha1: str = ""
         self.__sha256: str = ""
+        # Data size info
+        self.__virtual_size: int = 0
         # DOS header data
         self.__e_lfanew: hex(int) = 0
         # Header data
@@ -43,6 +45,7 @@ class PortableExecutable (object):
             self.calc_sha1()
             self.calc_sha256()
             binary = lief.parse (self.name)
+            self.extract_virtual_size (binary)
             self.e_lfanew = binary.dos_header.addressof_new_exeheader
             self.coff_header = CoffHeader (header = binary.header)
             self.opt_header = OptionalHeader (binary.optional_header)
@@ -73,6 +76,9 @@ class PortableExecutable (object):
                 block = f_read.read (4096)
                 hasher.update (block)
         self.sha1 = hasher.hexdigest()
+
+    def extract_virtual_size (self, bin: lief.PE.Binary) -> None:
+        self.virtual_size = bin.virtual_size
 
     def calc_sha256 (self) -> None:
         hasher = sha256()
@@ -122,6 +128,10 @@ class PortableExecutable (object):
     @property
     def sha256 (self) -> str:
         return self.__sha256
+
+    @property
+    def virtual_size (self) -> int:
+        return self.__virtual_size
 
     @property
     def e_lfanew (self) -> int:
@@ -177,6 +187,10 @@ class PortableExecutable (object):
     def sha256 (self, h: str) -> None:
         self.__sha256 = h
 
+    @virtual_size.setter
+    def virtual_size (self, vs: int) -> None:
+        self.__virtual_size = vs
+
     @e_lfanew.setter
     def e_lfanew (self, n: int) -> None:
         self.__e_lfanew = n
@@ -217,7 +231,8 @@ class PortableExecutable (object):
 
     def __str__ (self) -> str:
         return ("Name: " + self.name +
-                "\nSize: " + str (self.size) + " bytes" +
+                "\nSize:  " + str (self.size) + " bytes" +
+                "\nVSize: " + str (self.virtual_size) + " bytes" +
                 "\nMD5 : " + (self.md5) +
                 "\nSHA1: " + (self.sha1) + 
                 "\nS256: " + str (self.sha256) +
@@ -239,4 +254,5 @@ if __name__ == "__main__":
     print (test_executable.opt_header)
     for s in test_executable.sec_list:
         print (s)
-    print (test_executable.load_cfg)
+    if test_executable.has_cfg == True:
+        print (test_executable.load_cfg)

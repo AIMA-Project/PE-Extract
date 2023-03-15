@@ -15,6 +15,8 @@ class OptionalHeader (object):
         # Windows-specific fields
         self.__imagebase: int = 0
         self.__file_alignment: int = 0
+        self.__image_size: int = 0
+        self.__header_size: int = 0
         self.__stack_reserve_size: int = 0
         self.__subsystem: lief.PE.SUBSYSTEM = None
         self.__maj_subsys_ver: int = 0
@@ -38,6 +40,8 @@ class OptionalHeader (object):
             self.extract_dll_properties   (opt_header)
             self.extract_imagebase        (opt_header)
             self.extract_file_alignment   (opt_header)
+            self.extract_image_size       (opt_header)
+            self.extract_header_size      (opt_header)
             self.extract_stack_reserve_size (opt_header)
             self.extract_full_subsystem   (opt_header)
             self.extract_maj_os_ver       (opt_header)
@@ -72,6 +76,12 @@ class OptionalHeader (object):
 
     def extract_file_alignment (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.file_alignment = opt_header.file_alignment
+
+    def extract_image_size (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.image_size = opt_header.sizeof_image
+
+    def extract_header_size (self, opt_header: lief.PE.OptionalHeader) -> None:
+        self.header_size = opt_header.sizeof_headers
 
     def extract_stack_reserve_size (self, opt_header: lief.PE.OptionalHeader) -> None:
         self.stack_reserve_size = opt_header.sizeof_stack_reserve
@@ -137,6 +147,14 @@ class OptionalHeader (object):
     @property
     def file_alignment (self) -> int:
         return self.__file_alignment
+
+    @property
+    def image_size (self) -> int:
+        return self.__image_size
+
+    @property
+    def header_size (self) -> int:
+        return self.__header_size
     
     @property
     def stack_reserve_size (self) -> int:
@@ -202,6 +220,14 @@ class OptionalHeader (object):
     def file_alignment (self, fa: int) -> None:
         self.__file_alignment = fa
 
+    @image_size.setter
+    def image_size (self, s: int) -> None:
+        self.__image_size = s
+
+    @header_size.setter
+    def header_size (self, s: int) -> None:
+        self.__header_size = s
+
     @stack_reserve_size.setter
     def stack_reserve_size (self, s: int) -> None:
         self.__stack_reserve_size = s
@@ -238,6 +264,8 @@ class OptionalHeader (object):
                 "\nDLL Characts: " + str ( bin (self.dll_properties)) +
                 "\nImage Base: " + str ( hex (self.imagebase)) +
                 "\nFile Align: " + str (self.file_alignment) +
+                "\n Img Size : " + str (self.image_size) +
+                "\nHead Size : " + str( self.header_size) +
                 "\nStk Res Size: " + str (self.stack_reserve_size) +
                 "\nSubsystem : " + str (self.subsystem) +
                 "\nSubsys Versi: " + str (self.maj_subsys_ver) + "." + str (self.min_subsys_ver) +
