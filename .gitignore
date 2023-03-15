@@ -1,5 +1,4 @@
 *test*
-
-build/
+*.key
 *__pycache__/
 *.vscode/
