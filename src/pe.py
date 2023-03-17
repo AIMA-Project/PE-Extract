@@ -1,5 +1,6 @@
 from coff import CoffHeader
 from hashlib import md5, sha1, sha256
+from libraryimports import LibraryImport
 from loadconfig import LoadConfigDirectory
 from optionalheader import OptionalHeader
 from os import path
@@ -35,6 +36,8 @@ class PortableExecutable (object):
         # Load configuration
         self.__has_cfg: bool = False
         self.__load_cfg: LoadConfigDirectory = None
+        # Imports (i.e. dll files)
+        self.__imports: List[LibraryImport] = []
         # Load in data from PE file
         self.setup()
 
@@ -56,6 +59,7 @@ class PortableExecutable (object):
             self.has_cfg = binary.has_configuration
             if (self.has_cfg):
                 self.load_cfg = LoadConfigDirectory (load_cfg = binary.load_configuration)
+            self.extract_imports (binary)
 
     def check_size (self) -> None:
         self.size = path.getsize (self.name)
@@ -78,9 +82,6 @@ class PortableExecutable (object):
                 hasher.update (block)
         self.sha1 = hasher.hexdigest()
 
-    def extract_virtual_size (self, bin: lief.PE.Binary) -> None:
-        self.virtual_size = bin.virtual_size
-
     def calc_sha256 (self) -> None:
         hasher = sha256()
         with open (self.name, "rb") as f_read:
@@ -90,23 +91,42 @@ class PortableExecutable (object):
                 hasher.update (block)
         self.sha256 = hasher.hexdigest()
 
+    def extract_virtual_size (self, bin: lief.PE.Binary) -> None:
+        self.virtual_size = bin.virtual_size
+
     def calc_sec_entropy (self) -> None:
         entropy_list: List[int] = []
+        # Get a list of entropy values for each section
         for s in self.sec_list:
             entropy_list.append (s.entropy)
+        # Calculate min, avg, and max section entropy
         self.sec_min_entropy = min (entropy_list)
         self.sec_avg_entropy = (sum (entropy_list) / len (entropy_list))
         self.sec_max_entropy = max (entropy_list)
 
     def init_sec_list (self, sections: lief.PE.Binary.it_section) -> int:
+        # Get a list of all sections part of a binary
         for sec in sections:
             new_section = Section (section_info = sec)
-            self.sec_list.append(new_section)
+            self.sec_list.append (new_section)
+        # Return the number of sections in the binary
         return len (self.sec_list)
     
     def append_section (self, sec: Section) -> int:
+        # Add a section to the section list and return new length of that list
         self.sec_list.append(sec)
         return len (self.sec_list)
+
+    def extract_imports (self, bin: lief.PE.Binary) -> None:
+        imp_list = bin.imports
+        # Iterate through all imports in a binary
+        for i in imp_list:
+            function_list: List[str] = []
+            # Create a list of function imports for a file import
+            for e in i.entries:
+                function_list.append (str(e.name))
+            # Add library import to list of library imports
+            self.imports.append (LibraryImport (name = i.name, functions = function_list))
     
 
     # Accessors and mutators
@@ -167,6 +187,10 @@ class PortableExecutable (object):
     @property
     def load_cfg (self) -> LoadConfigDirectory:
         return self.__load_cfg
+
+    @property
+    def imports (self) -> List[LibraryImport]:
+        return self.__imports
     
     @name.setter
     def name (self, n: str) -> None:
@@ -228,6 +252,10 @@ class PortableExecutable (object):
     def load_cfg (self, lc: LoadConfigDirectory) -> None:
         self.__load_cfg = lc
 
+    @imports.setter
+    def imports (self, i: List[LibraryImport]) -> None:
+        self.__imports = i
+
 
     # Overloads
     def __str__ (self) -> str:
@@ -251,10 +279,12 @@ class PortableExecutable (object):
 
 if __name__ == "__main__":
     test_executable = PortableExecutable(file = argv[1])
-    print (test_executable)
-    print (test_executable.coff_header)
-    print (test_executable.opt_header)
-    for s in test_executable.sec_list:
-        print (s)
-    if test_executable.has_cfg == True:
-        print (test_executable.load_cfg)
+    # print (test_executable)
+    # print (test_executable.coff_header)
+    # print (test_executable.opt_header)
+    # for s in test_executable.sec_list:
+    #     print (s)
+    # if test_executable.has_cfg == True:
+    #     print (test_executable.load_cfg)
+    for i in test_executable.imports:
+        print (i)

@@ -2,6 +2,7 @@ from pe import PortableExecutable
 from sys import argv
 
 import json
+import lief
 import vtapi
 
 
@@ -166,7 +167,6 @@ class AnalysisEngine (object):
 if __name__ == "__main__":
     analysis = AnalysisEngine (file = argv[1])
     analysis.validate_sizes ()
-    # analysis.query_vt_api ()
+    analysis.query_vt_api ()
     analysis.check_section_names ()
     print (analysis)
-
