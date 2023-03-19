@@ -1,3 +1,19 @@
+'''
+@file loadconfig.py
+@author Drew Wheeler
+
+@brief Contains definitions for the LoadConfigDirectory class.
+
+The load configuration directory is a special section in the executable that stores a variety of
+information. The primary data exctracted from it is the security cookie, which is used for memory
+checking after function calls.
+
+The LoadConfigDirectory is a component of the larger PortableExecutable class.
+
+@see pe.py
+
+'''
+
 import lief
 
 

@@ -1,3 +1,22 @@
+'''
+@file analysisengine.py
+@author Drew Wheeler
+
+@brief Contains definitions for the AnalysisEngine class.
+
+The Analysis Engine is the object through which a PE file's features are extracted and examined.
+It's primary goal is to take features extracted by a PortableExecutable class and its member
+classes and analyze them for anything indicative of malware. Once analyzed, a simple report is
+printed to terminal, indicating which attributes of the executable file are indicative of malware.
+
+Use of the VirusTotal API by this class is dependent on having an API key obtained through their
+website. For more information on VirusTotal's API and how to get started with it, please see the
+link https://support.virustotal.com/hc/en-us/articles/115002100149-API.
+
+@see pe.py
+
+'''
+
 from pe import PortableExecutable
 from sys import argv
 

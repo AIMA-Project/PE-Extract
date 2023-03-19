@@ -1,3 +1,22 @@
+'''
+@file optionalheader.py
+@author Drew Wheeler
+
+@brief Contains definitions for the OptionalHeader class.
+
+The optional header is a header found in PE files, but not necessarily object files (hence the
+"optional" designation). It contains a wide variety of information valuable to malware analysis. The
+primary data extracted in this situation are related to code structure, simple linker informaiton,
+and characteristics of the target machine.
+
+A large portion of the optional header is used as part of malware analysis, as it contains a general
+overview of the program. In this instance, the OptionalHeader class is used as part of the larger
+PortableExecutable class.
+
+@see pe.py
+
+'''
+
 import lief
 
 class OptionalHeader (object):

@@ -1,3 +1,22 @@
+'''
+@file coff.py
+@author Drew Wheeler
+
+@brief Contains definitions for the CoffHeader class.
+
+The COFF header stores various data about a PE file. The most interesting of these are the
+target machine, the number of sections in the executable, and the list of characterisitics of the
+executable. Other data are also present in this section that are ancillary, but important
+nonetheless.
+
+The CoffHeader class is a component of the PortableExecutable class, which is the enveloping
+structure that actually utilizes its functionality.
+
+@see pe.py
+
+'''
+
+
 from datetime import datetime, timezone
 from typing import List
 
