@@ -1,3 +1,27 @@
+'''
+@file pe.py
+@author Drew Wheeler
+
+@brief Contains definitions for the PortableExecutable class.
+
+The PortableExecutable class is the overall encompassing class used to represent the data pertaining
+to a PE file. Portions of a PE file are represented using class instances tailored to hold that
+portion's data. In addition, metadata relating to the executable file is aggregated into this class
+for access by other portions of the program.
+
+The PortableExecutable class and the classes it contains make heavy use of the lief library to
+simplify extracting the metadata and evaluating various attributes of the PE file.
+
+For more information on the PE format, see the following link:
+https://learn.microsoft.com/en-us/windows/win32/debug/pe-format
+
+For more information on the lief library, see the documentation at the following link:
+https://lief-project.github.io/doc/stable/api/python/index.html#python-api-ref
+
+@see analysisengine.py coff.py libraryimports.py loadconfig.py optionalheader.py section.py vtapi.py
+
+'''
+
 from coff import CoffHeader
 from hashlib import md5, sha1, sha256
 from libraryimports import LibraryImport

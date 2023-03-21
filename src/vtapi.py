@@ -1,3 +1,22 @@
+'''
+@file vtapi.py
+@author Drew Wheeler
+
+@brief Contains a basic interface for obtaining VirusTotal reports.
+
+Reports from VirusTotal for a given hash value can be obtained via the API. From this, various
+information relating to pre-ran scans can be gathered.
+
+Utilizing the VirusTotal API requires an API key tied to a registered account to work properly. By
+default, the key should be placed in a "virustotal.key" file in the root of the project directory.
+This value can be changed, however. See the following link for more information on how to get
+started with the VirusTotal API: https://support.virustotal.com/hc/en-us/articles/115002100149-API
+
+@see pe.py
+
+'''
+
+
 import requests
 
 

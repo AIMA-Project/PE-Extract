@@ -1,3 +1,27 @@
+'''
+@file section.py
+@author Drew Wheeler
+
+@brief Contains definitions for the Section class.
+
+An executable program is comprised of several sections containing various instructions and data
+needed by the executable. A section has various characteristics that identify attributes pertaining
+to the section itself. In addition, each section has a calculated entropy value that indicates the
+"randomness" of its data.
+
+The theory behind malware detection using sections is that more complex malware will have greater
+section entropy. This is a byproduct of obfuscation techniques being used to hide the executable's
+true purpose. Calculating entropy can be used as part of a larger examination system to aid in the
+detection of malicious files.
+
+The Section class is a component of the PortableExecutable class, with several Sections being
+maintained in a list. Minimum, average, and maximum entropy for an executable's sections are
+obtained using this list as part of the data collection process.
+
+@see pe.py
+
+'''
+
 import lief
 
 
