@@ -1,4 +1,5 @@
 *test*
 *.key
+*.json
 *__pycache__/
 *.vscode/

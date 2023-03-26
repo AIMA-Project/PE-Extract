@@ -286,14 +286,14 @@ class PortableExecutable (object):
         return ("Name: " + self.name +
                 "\nSize:  " + str (self.size) + " bytes" +
                 "\nVSize: " + str (self.virtual_size) + " bytes" +
-                "\nMD5 : " + (self.md5) +
+                "\nMD5: " + (self.md5) +
                 "\nSHA1: " + (self.sha1) + 
                 "\nS256: " + str (self.sha256) +
                 "\ne_lfanew: " + str (hex (self.e_lfanew)) +
                 "\nEntropy: " +
-                "\n\tMin: " + str (self.sec_min_entropy) +
-                "\n\tAvg: " + str (self.sec_avg_entropy) +
-                "\n\tMax: " + str (self.sec_max_entropy) +
+                "\neMin: " + str (self.sec_min_entropy) +
+                "\neAvg: " + str (self.sec_avg_entropy) +
+                "\neMax: " + str (self.sec_max_entropy) +
                 "\nHas Load Cfg: " + str (self.has_cfg)
                )
 
