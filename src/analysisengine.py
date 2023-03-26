@@ -101,11 +101,11 @@ class AnalysisEngine (object):
                 self.flag_packed_sections = True
                 self.packing_type = "UPX"
                 self.packed_section_count += 1
-            elif (sections.fullname[0:7] == ".MPRESS"):
+            elif (sections.full_name[0:7] == ".MPRESS"):
                 self.flag_packed_sections = True
                 self.packing_type = "MPRESS"
                 self.packed_section_count += 1
-            elif (sections.fullname[0:4] == ".vmp"):
+            elif (sections.full_name[0:4] == ".vmp"):
                 self.flag_packed_sections = True
                 self.packing_type = "VMProtect"
                 self.packed_section_count += 1
