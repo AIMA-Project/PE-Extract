@@ -28,10 +28,20 @@ import vtapi
 class AnalysisEngine (object):
 
     # Initializers
-    def __init__ (self, file: str = "", api_key_dir: str = "./") -> None:
+    def __init__ (self, file: str = "", do_api_checks: bool = False, api_key_dir: str = "./") -> None:
         self.__input_file: str = file
+        self.__api_checks: bool = do_api_checks
         self.__executable: PortableExecutable = PortableExecutable (file)
-        self.__vt_api_key: str = vtapi.vt_load_api_key (key_file = (api_key_dir + "virustotal.key"))
+        if self.__api_checks:
+            try:
+                self.__vt_api_key: str = vtapi.vt_load_api_key (key_file = (api_key_dir + "virustotal.key"))
+            except FileNotFoundError:
+                self.__api_checks = False
+                self.__vt_api_key = ""
+                print ("API key for AnalysisEngine not found")
+            except BaseException:
+                print ("An unhandled error occurred in AnalysisEngine")
+                exit()
         # Flags indicating potentially malicious attributes
         self.__flag_mismatched_sizes: bool = False
         self.__flag_vt_match: bool = False
@@ -49,9 +59,9 @@ class AnalysisEngine (object):
                 [x] UPX
                 [ ] Themida
                 [ ] The Enigma Protector
-                [ ] VMProtect
+                [x] VMProtect
                 [ ] Obsidium
-                [ ] MPRESS
+                [x] MPRESS
                 [ ] Exe Packer 2.300
                 [ ] ExeStealth
         '''
@@ -90,6 +100,14 @@ class AnalysisEngine (object):
             if (sections.full_name[0:3] == "UPX"):
                 self.flag_packed_sections = True
                 self.packing_type = "UPX"
+                self.packed_section_count += 1
+            elif (sections.fullname[0:7] == ".MPRESS"):
+                self.flag_packed_sections = True
+                self.packing_type = "MPRESS"
+                self.packed_section_count += 1
+            elif (sections.fullname[0:4] == ".vmp"):
+                self.flag_packed_sections = True
+                self.packing_type = "VMProtect"
                 self.packed_section_count += 1
 
 
