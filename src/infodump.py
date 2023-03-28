@@ -38,12 +38,14 @@ class InfoDump (object):
             a_eng =self.export_analysis_engine ()
             pe = self.export_portable_executable ()
             ch = self.export_coff_header ()
+            opt = self.export_optional_header ()
             # Aggregate data and prepare to be written to JSON
             export_dict = {
                 "file" : self.__analyzer.input_file,
                 "analysis" : a_eng,
                 "overview" : pe,
-                "coff" : ch
+                "coff" : ch,
+                "optional" : opt
             }
             json.dump (export_dict, exporter, indent = 4)
 
@@ -66,8 +68,8 @@ class InfoDump (object):
             "timestamp" : self.__analyzer.executable.coff_header.timestamp,
             "sym table ptr" : self.__analyzer.executable.coff_header.sym_table_ptr,
             "sym quantity" : self.__analyzer.executable.coff_header.symbol_quantity,
-            "opt header size" : self.__analyzer.executable.coff_header.opt_header_size
-            #"characteristics" : list (self.__analyzer.executable.coff_header.characteristics)
+            "opt header size" : self.__analyzer.executable.coff_header.opt_header_size,
+            "characteristics" : str(self.__analyzer.executable.coff_header.characteristics)
         }
         return out_dict
 
@@ -85,6 +87,30 @@ class InfoDump (object):
             "has load cfg" : self.__analyzer.executable.has_cfg
         }
         return out_dict
+
+    def export_optional_header (self) -> dict():
+        out_dict = {
+            "magic" : hex (self.__analyzer.executable.opt_header.magic),
+            "maj link ver" : self.__analyzer.executable.opt_header.maj_link_ver,
+            "min link ver" : self.__analyzer.executable.opt_header.min_link_ver,
+            "code size" : self.__analyzer.executable.opt_header.code_size,
+            "init dat size" : self.__analyzer.executable.opt_header.init_data_size,
+            "uninit dat size" : self.__analyzer.executable.opt_header.uninit_data_size,
+            "code base" : self.__analyzer.executable.opt_header.code_base,
+            "dll properties" : hex (self.__analyzer.executable.opt_header.dll_properties),
+            "imagebase" : self.__analyzer.executable.opt_header.imagebase,
+            "file align" : self.__analyzer.executable.opt_header.file_alignment,
+            "image size" : self.__analyzer.executable.opt_header.image_size,
+            "header size" : self.__analyzer.executable.opt_header.header_size,
+            "stack reserve" : self.__analyzer.executable.opt_header.stack_reserve_size,
+            "subsystem" : str (self.__analyzer.executable.opt_header.subsystem),
+            "maj subsys ver" : self.__analyzer.executable.opt_header.maj_subsys_ver,
+            "min subsys ver" : self.__analyzer.executable.opt_header.min_subsys_ver,
+            "maj os ver" : self.__analyzer.executable.opt_header.maj_os_ver,
+            "min os ver" : self.__analyzer.executable.opt_header.min_os_ver
+        }
+        return out_dict    
+
 
     
     # Accessor and Mutators
