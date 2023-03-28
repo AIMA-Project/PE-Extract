@@ -39,13 +39,15 @@ class InfoDump (object):
             pe = self.export_portable_executable ()
             ch = self.export_coff_header ()
             opt = self.export_optional_header ()
+            sec = self.export_sections ()
             # Aggregate data and prepare to be written to JSON
             export_dict = {
                 "file" : self.__analyzer.input_file,
                 "analysis" : a_eng,
                 "overview" : pe,
                 "coff" : ch,
-                "optional" : opt
+                "optional" : opt,
+                "sections" : sec
             }
             json.dump (export_dict, exporter, indent = 4)
 
@@ -109,9 +111,14 @@ class InfoDump (object):
             "maj os ver" : self.__analyzer.executable.opt_header.maj_os_ver,
             "min os ver" : self.__analyzer.executable.opt_header.min_os_ver
         }
-        return out_dict    
+        return out_dict
 
-
+    def export_sections (self) -> dict():
+        ret_dict = {}
+        for sec in self.__analyzer.executable.sec_list:
+            ret_dict[sec.full_name.replace('\00', '')] = {"characteristics" : str(sec.characteristics),
+                                                          "entropy" : sec.entropy}
+        return ret_dict
     
     # Accessor and Mutators
     @property
