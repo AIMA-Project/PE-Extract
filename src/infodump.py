@@ -40,6 +40,10 @@ class InfoDump (object):
             ch = self.export_coff_header ()
             opt = self.export_optional_header ()
             sec = self.export_sections ()
+            cfg = None
+            if (self.__analyzer.executable.has_cfg == True):
+                cfg = self.export_load_config ()
+            l_imp = self.export_library_imports ()
             # Aggregate data and prepare to be written to JSON
             export_dict = {
                 "file" : self.__analyzer.input_file,
@@ -47,7 +51,9 @@ class InfoDump (object):
                 "overview" : pe,
                 "coff" : ch,
                 "optional" : opt,
-                "sections" : sec
+                "sections" : sec,
+                "load config" : cfg,
+                "library imports" : l_imp
             }
             json.dump (export_dict, exporter, indent = 4)
 
@@ -71,6 +77,7 @@ class InfoDump (object):
             "sym table ptr" : self.__analyzer.executable.coff_header.sym_table_ptr,
             "sym quantity" : self.__analyzer.executable.coff_header.symbol_quantity,
             "opt header size" : self.__analyzer.executable.coff_header.opt_header_size,
+            # TODO: Serialize the characteristics list
             "characteristics" : str(self.__analyzer.executable.coff_header.characteristics)
         }
         return out_dict
@@ -116,8 +123,21 @@ class InfoDump (object):
     def export_sections (self) -> dict():
         ret_dict = {}
         for sec in self.__analyzer.executable.sec_list:
+            # TODO: Serialize the elements of characteristics
             ret_dict[sec.full_name.replace('\00', '')] = {"characteristics" : str(sec.characteristics),
                                                           "entropy" : sec.entropy}
+        return ret_dict
+    
+    def export_load_config (self) -> dict():
+        ret_dict = {
+            "security cookie" : str(self.__analyzer.executable.load_cfg.security_cookie)
+        }
+        return ret_dict
+    
+    def export_library_imports (self) -> dict():
+        ret_dict = {}
+        for imp in self.__analyzer.executable.imports:
+            ret_dict[imp.import_name] = list(imp.import_functions)
         return ret_dict
     
     # Accessor and Mutators
